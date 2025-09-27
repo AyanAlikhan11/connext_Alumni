@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - CONNEXT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse the same CSS variables and base styles from the main page */
+        :root {
+            --primary-color: #1a4f8e;
+            --secondary-color: #3a7bd5;
+            --accent-color: #f64f59;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --success-color: #28a745;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --transition: all 0.3s ease;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: var(--light-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        /* Auth Section */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding: 2rem 0;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 800px;
+            padding: 2.5rem;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--gray-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 79, 142, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .auth-link {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Role Selection Styles */
+        .role-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .role-card {
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .role-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .role-card.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(26, 79, 142, 0.05);
+        }
+
+        .role-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .role-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .role-card p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        /* Form Sections */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Verification Section */
+        .verification-section {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+        }
+
+        .verification-title {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-color);
+        }
+
+        .file-upload i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .otp-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+
+        .otp-input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+        }
+
+        /* Physical Verification Section */
+        .physical-verification {
+            background-color: #e9f7ef;
+            border-left: 4px solid var(--success-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+        }
+
+        .physical-verification h4 {
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .time-slot {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .time-slot:hover {
+            border-color: var(--primary-color);
+        }
+
+        .time-slot.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Success Message */
+        .success-message {
+            text-align: center;
+            padding: 2rem;
+            display: none;
+        }
+
+        .success-icon {
+            font-size: 3rem;
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+
+        .copyright {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .role-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .auth-card {
+                padding: 1.5rem;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo"><i class="fas fa-graduation-cap"></i>AlumniConnect</a>
+        </div>
+    </header>
+
+    <section class="auth-container">
+        <div class="auth-card">
+            <!-- Role Selection Section -->
+            <div id="roleSelection" class="form-section active">
+                <div class="auth-header">
+                    <h1 class="auth-title">Select Your Role</h1>
+                    <p class="auth-subtitle">Choose how you'd like to register</p>
+                </div>
+                
+                <div class="role-selection">
+                    <div class="role-card" data-role="alumni">
+                        <div class="role-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <h3>Alumni</h3>
+                        <p>Graduated students joining the alumni network</p>
+                    </div>
+                    
+                    <div class="role-card" data-role="student">
+                        <div class="role-icon"><i class="fas fa-user-graduate"></i></div>
+                        <h3>Current Student</h3>
+                        <p>Currently enrolled students</p>
+                    </div>
+                    
+                    <div class="role-card" data-role="institute">
+                        <div class="role-icon"><i class="fas fa-university"></i></div>
+                        <h3>Institute Official</h3>
+                        <p>Faculty and administrators</p>
+                    </div>
+                </div>
+                
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.html" class="auth-link">Login here</a></p>
+                </div>
+            </div>
+
+            <!-- Registration Form Section -->
+            <div id="registrationForm" class="form-section">
+                <div class="auth-header">
+                    <h1 class="auth-title" id="formTitle">Create Your Account</h1>
+                    <p class="auth-subtitle" id="formSubtitle">Join our community</p>
+                </div>
+
+                <form id="registerForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" id="firstName" class="form-input" placeholder="Enter your first name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" id="lastName" class="form-input" placeholder="Enter your last name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Create a password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+                    </div>
+
+                    <div class="form-group" id="graduationYearField">
+                        <label for="graduationYear" class="form-label">Graduation Year</label>
+                        <input type="number" id="graduationYear" class="form-input" placeholder="Enter your graduation year" min="1950" max="2030">
+                    </div>
+
+                    <div class="form-group" id="studentIdField" style="display: none;">
+                        <label for="studentId" class="form-label">Student ID</label>
+                        <input type="text" id="studentId" class="form-input" placeholder="Enter your student ID">
+                    </div>
+
+                    <div class="form-group" id="institutionField" style="display: none;">
+                        <label for="institutionName" class="form-label">Institution Name</label>
+                        <input type="text" id="institutionName" class="form-input" placeholder="Enter your institution name">
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" id="continueToVerification" class="btn btn-full">Continue to Verification</button>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" id="backToRoleSelection" class="btn btn-outline btn-full">Back to Role Selection</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Verification Section -->
+            <div id="verificationSection" class="form-section">
+                <div class="auth-header">
+                    <h1 class="auth-title">Verify Your Identity</h1>
+                    <p class="auth-subtitle">Complete your registration</p>
+                </div>
+                
+                <div class="verification-section">
+                    <h3 class="verification-title">Verification Required</h3>
+                    <p>To complete your registration, please verify your identity.</p>
+
+                    <div id="alumniVerification">
+                        <div class="file-upload" id="gradecardUpload">
+                            <i class="fas fa-file-upload"></i>
+                            <p>Upload your grade card or diploma as proof</p>
+                            <p class="small">(PDF, JPG, or PNG files accepted)</p>
+                            <input type="file" id="gradecardFile" style="display: none;" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                    </div>
+
+                    <div id="otpVerification">
+                        <p>We've sent a verification code to your email. Please enter it below:</p>
+                        <div class="otp-container">
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+                        </div>
+                        <p>Didn't receive the code? <a href="#" id="resendOtp">Resend</a></p>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" id="completeVerification" class="btn btn-full">Complete Verification</button>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" id="backToRegistrationForm" class="btn btn-outline btn-full">Back to Registration</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physical Verification Section (For Institute Officials) -->
+            <div id="physicalVerificationSection" class="form-section">
+                <div class="auth-header">
+                    <h1 class="auth-title">Schedule Physical Verification</h1>
+                    <p class="auth-subtitle">Required for institute officials</p>
+                </div>
+                
+                <div class="verification-section">
+                    <div class="physical-verification">
+                        <h4><i class="fas fa-calendar-check"></i> Physical Verification Required</h4>
+                        <p>As an institute official, we need to verify your identity in person at our office. Please schedule a convenient time for your verification appointment.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="verificationDate" class="form-label">Select Date</label>
+                        <input type="date" id="verificationDate" class="form-input" min="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Select Time Slot</label>
+                        <div class="time-slots">
+                            <div class="time-slot" data-time="09:00 AM">09:00 AM</div>
+                            <div class="time-slot" data-time="10:00 AM">10:00 AM</div>
+                            <div class="time-slot" data-time="11:00 AM">11:00 AM</div>
+                            <div class="time-slot" data-time="02:00 PM">02:00 PM</div>
+                            <div class="time-slot" data-time="03:00 PM">03:00 PM</div>
+                            <div class="time-slot" data-time="04:00 PM">04:00 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="verificationAddress" class="form-label">Verification Address</label>
+                        <p><strong>AlumniConnect Office:</strong> 123 Education Ave, Academic City</p>
+                        <p>Please bring your institutional ID card and official verification documents.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" id="scheduleVerification" class="btn btn-full">Schedule Verification</button>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" id="backToOtpVerification" class="btn btn-outline btn-full">Back to OTP Verification</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="success-message">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 id="successTitle">Registration Successful!</h3>
+                <p id="successMessageText">Your account has been created successfully. Please check your email to verify your account.</p>
+                <div id="verificationDetails" style="display: none;">
+                    <h4>Your Verification Appointment</h4>
+                    <p><strong>Date:</strong> <span id="appointmentDate"></span></p>
+                    <p><strong>Time:</strong> <span id="appointmentTime"></span></p>
+                    <p><strong>Address:</strong> AlumniConnect Office, 123 Education Ave, Academic City</p>
+                    <p>Please bring your institutional ID card and official verification documents.</p>
+                </div>
+                <div class="form-group">
+                    <a href="login.html" class="btn btn-full">Login Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2023 AlumniConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const roleSelection = document.getElementById('roleSelection');
+            const registrationForm = document.getElementById('registrationForm');
+            const verificationSection = document.getElementById('verificationSection');
+            const physicalVerificationSection = document.getElementById('physicalVerificationSection');
+            const successMessage = document.getElementById('successMessage');
+            const roleCards = document.querySelectorAll('.role-card');
+            const graduationYearField = document.getElementById('graduationYearField');
+            const studentIdField = document.getElementById('studentIdField');
+            const institutionField = document.getElementById('institutionField');
+            const alumniVerification = document.getElementById('alumniVerification');
+            const formTitle = document.getElementById('formTitle');
+            const formSubtitle = document.getElementById('formSubtitle');
+            const continueToVerificationBtn = document.getElementById('continueToVerification');
+            const backToRoleSelectionBtn = document.getElementById('backToRoleSelection');
+            const backToRegistrationFormBtn = document.getElementById('backToRegistrationForm');
+            const completeVerificationBtn = document.getElementById('completeVerification');
+            const backToOtpVerificationBtn = document.getElementById('backToOtpVerification');
+            const scheduleVerificationBtn = document.getElementById('scheduleVerification');
+            const gradecardUpload = document.getElementById('gradecardUpload');
+            const gradecardFile = document.getElementById('gradecardFile');
+            const otpInputs = document.querySelectorAll('.otp-input');
+            const resendOtpLink = document.getElementById('resendOtp');
+            const verificationDate = document.getElementById('verificationDate');
+            const timeSlots = document.querySelectorAll('.time-slot');
+            const successTitle = document.getElementById('successTitle');
+            const successMessageText = document.getElementById('successMessageText');
+            const verificationDetails = document.getElementById('verificationDetails');
+            const appointmentDate = document.getElementById('appointmentDate');
+            const appointmentTime = document.getElementById('appointmentTime');
+            
+            let selectedRole = '';
+            let selectedTimeSlot = '';
+
+            // Set minimum date for verification date picker (tomorrow)
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const yyyy = tomorrow.getFullYear();
+            const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+            const dd = String(tomorrow.getDate()).padStart(2, '0');
+            verificationDate.min = `${yyyy}-${mm}-${dd}`;
+
+            // Role selection
+            roleCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    roleCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    
+                    // Store selected role
+                    selectedRole = this.getAttribute('data-role');
+                    
+                    // Update form title based on role
+                    if (selectedRole === 'alumni') {
+                        formTitle.textContent = 'Register as Alumni';
+                        formSubtitle.textContent = 'Join our alumni network';
+                    } else if (selectedRole === 'student') {
+                        formTitle.textContent = 'Register as Student';
+                        formSubtitle.textContent = 'Join as a current student';
+                    } else if (selectedRole === 'institute') {
+                        formTitle.textContent = 'Register as Institute Official';
+                        formSubtitle.textContent = 'Join as faculty or administrator';
+                    }
+                    
+                    // Show appropriate fields based on role
+                    if (selectedRole === 'alumni') {
+                        graduationYearField.style.display = 'block';
+                        studentIdField.style.display = 'none';
+                        institutionField.style.display = 'none';
+                        alumniVerification.style.display = 'block';
+                    } else if (selectedRole === 'student') {
+                        graduationYearField.style.display = 'none';
+                        studentIdField.style.display = 'block';
+                        institutionField.style.display = 'none';
+                        alumniVerification.style.display = 'none';
+                    } else if (selectedRole === 'institute') {
+                        graduationYearField.style.display = 'none';
+                        studentIdField.style.display = 'none';
+                        institutionField.style.display = 'block';
+                        alumniVerification.style.display = 'none';
+                    }
+                    
+                    // Move to registration form
+                    roleSelection.classList.remove('active');
+                    registrationForm.classList.add('active');
+                });
+            });
+
+            // Back to role selection
+            backToRoleSelectionBtn.addEventListener('click', function() {
+                registrationForm.classList.remove('active');
+                roleSelection.classList.add('active');
+            });
+
+            // Continue to verification
+            continueToVerificationBtn.addEventListener('click', function() {
+                // Basic form validation
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (!firstName || !lastName || !email || !password || !confirmPassword) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
+                }
+                
+                // Additional validation based on role
+                if (selectedRole === 'alumni') {
+                    const graduationYear = document.getElementById('graduationYear').value;
+                    if (!graduationYear) {
+                        alert('Please enter your graduation year');
+                        return;
+                    }
+                } else if (selectedRole === 'student') {
+                    const studentId = document.getElementById('studentId').value;
+                    if (!studentId) {
+                        alert('Please enter your student ID');
+                        return;
+                    }
+                } else if (selectedRole === 'institute') {
+                    const institutionName = document.getElementById('institutionName').value;
+                    if (!institutionName) {
+                        alert('Please enter your institution name');
+                        return;
+                    }
+                }
+                
+                // Move to verification section
+                registrationForm.classList.remove('active');
+                verificationSection.classList.add('active');
+                
+                // Simulate sending OTP
+                simulateSendOtp();
+            });
+
+            // Back to registration form
+            backToRegistrationFormBtn.addEventListener('click', function() {
+                verificationSection.classList.remove('active');
+                registrationForm.classList.add('active');
+            });
+
+            // Complete verification
+            completeVerificationBtn.addEventListener('click', function() {
+                // Validate OTP
+                let otp = '';
+                otpInputs.forEach(input => {
+                    otp += input.value;
+                });
+                
+                if (otp.length !== 6) {
+                    alert('Please enter the complete verification code');
+                    return;
+                }
+                
+                // For alumni, check if gradecard is uploaded
+                if (selectedRole === 'alumni' && (!gradecardFile.files || gradecardFile.files.length === 0)) {
+                    alert('Please upload your grade card or diploma for verification');
+                    return;
+                }
+                
+                // For institute officials, go to physical verification
+                if (selectedRole === 'institute') {
+                    verificationSection.classList.remove('active');
+                    physicalVerificationSection.classList.add('active');
+                } else {
+                    // For alumni and students, complete registration
+                    showSuccessMessage();
+                }
+            });
+
+            // Back to OTP verification
+            backToOtpVerificationBtn.addEventListener('click', function() {
+                physicalVerificationSection.classList.remove('active');
+                verificationSection.classList.add('active');
+            });
+
+            // Time slot selection
+            timeSlots.forEach(slot => {
+                slot.addEventListener('click', function() {
+                    timeSlots.forEach(s => s.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedTimeSlot = this.getAttribute('data-time');
+                });
+            });
+
+            // Schedule verification
+            scheduleVerificationBtn.addEventListener('click', function() {
+                if (!verificationDate.value) {
+                    alert('Please select a date for your verification appointment');
+                    return;
+                }
+                
+                if (!selectedTimeSlot) {
+                    alert('Please select a time slot for your verification appointment');
+                    return;
+                }
+                
+                // Format the date for display
+                const date = new Date(verificationDate.value);
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const formattedDate = date.toLocaleDateString('en-US', options);
+                
+                // Set appointment details
+                appointmentDate.textContent = formattedDate;
+                appointmentTime.textContent = selectedTimeSlot;
+                
+                // Show success message with verification details
+                showSuccessMessage(true, formattedDate, selectedTimeSlot);
+            });
+
+            // File upload
+            gradecardUpload.addEventListener('click', function() {
+                gradecardFile.click();
+            });
+            
+            gradecardFile.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const fileName = this.files[0].name;
+                    gradecardUpload.innerHTML = `
+                        <i class="fas fa-file-check"></i>
+                        <p>File uploaded: ${fileName}</p>
+                        <p class="small">Click to change file</p>
+                        <input type="file" id="gradecardFile" style="display: none;" accept=".pdf,.jpg,.jpeg,.png">
+                    `;
+                    
+                    // Re-add event listener to the new element
+                    document.getElementById('gradecardUpload').addEventListener('click', function() {
+                        document.getElementById('gradecardFile').click();
+                    });
+                }
+            });
+
+            // OTP input handling
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1 && index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            // Resend OTP
+            resendOtpLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                simulateSendOtp();
+                alert('Verification code has been resent to your email');
+            });
+
+            // Show success message
+            function showSuccessMessage(hasVerification = false, date = '', time = '') {
+                if (hasVerification) {
+                    successTitle.textContent = 'Verification Scheduled!';
+                    successMessageText.textContent = 'Your institute official account registration is almost complete.';
+                    verificationDetails.style.display = 'block';
+                    physicalVerificationSection.classList.remove('active');
+                } else {
+                    successTitle.textContent = 'Registration Successful!';
+                    successMessageText.textContent = 'Your account has been created successfully. Please check your email to verify your account.';
+                    verificationDetails.style.display = 'none';
+                    verificationSection.classList.remove('active');
+                }
+                
+                successMessage.style.display = 'block';
+            }
+
+            // Simulate sending OTP
+            function simulateSendOtp() {
+                // In a real application, this would make an API call to send OTP
+                console.log('OTP sent to email');
+                
+                // Auto-fill with a demo OTP for testing
+                setTimeout(() => {
+                    const demoOtp = '123456';
+                    otpInputs.forEach((input, index) => {
+                        input.value = demoOtp[index];
+                    });
+                }, 1000);
+            }
+        });
+        // In register.html, inside the script tag at the bottom
+
+// Update the form submission for the registration form
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        role: selectedRole,
+        graduationYear: document.getElementById('graduationYear')?.value,
+        studentId: document.getElementById('studentId')?.value,
+        institutionName: document.getElementById('institutionName')?.value
+    };
+
+    try {
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Registration successful
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            // Redirect to dashboard or show success message
+            window.location.href = 'dashboard.html';
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred during registration');
+    }
+});
+    </script>
+</body>
+</html>

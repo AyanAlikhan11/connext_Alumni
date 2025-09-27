@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AlumniConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a4f8e;
+            --secondary-color: #3a7bd5;
+            --accent-color: #f64f59;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --transition: all 0.3s ease;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --sidebar-width: 250px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .sidebar-header .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+        }
+
+        .top-navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-size: 0.9rem;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            padding: 2rem;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.connections { background: var(--primary-color); }
+        .stat-icon.events { background: var(--success-color); }
+        .stat-icon.jobs { background: var(--warning-color); }
+        .stat-icon.mentors { background: var(--info-color); }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-info p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        /* Sections Grid */
+        .sections-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .view-all {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+        }
+
+        /* Events List */
+        .event-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-date {
+            background: var(--light-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            min-width: 70px;
+        }
+
+        .event-date .day {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .event-date .month {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            text-transform: uppercase;
+        }
+
+        .event-info h4 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .event-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-meta i {
+            margin-right: 0.3rem;
+        }
+
+        .btn-small {
+            padding: 0.3rem 0.8rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-small:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Connections List */
+        .connection-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .connection-item:last-child {
+            border-bottom: none;
+        }
+
+        .connection-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .connection-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .connection-info h4 {
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+        }
+
+        .connection-info p {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        /* Mobile Responsive */
+        @media screen and (max-width: 992px) {
+            .sections-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .top-navbar {
+                padding: 1rem;
+            }
+            
+            .search-bar {
+                max-width: 200px;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>AlumniConnect</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-network-wired"></i>
+                    <span>Network</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Events</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Jobs</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-hands-helping"></i>
+                    <span>Mentorship</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <header class="top-navbar">
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search alumni, events, jobs...">
+                </div>
+                
+                <div class="user-menu">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </div>
+                    
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <span>JD</span>
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name">John Doe</div>
+                            <div class="user-role">Alumni</div>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <section class="dashboard-content">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h1>Welcome back, John! 👋</h1>
+                    <p>Here's what's happening with your alumni network today.</p>
+                </div>
+
+                <!-- Statistics Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon connections">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>147</h3>
+                            <p>Connections</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon events">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>5</h3>
+                            <p>Upcoming Events</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon jobs">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>23</h3>
+                            <p>Job Opportunities</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon mentors">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>12</h3>
+                            <p>Available Mentors</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="sections-grid">
+                    <!-- Left Column -->
+                    <div class="left-column">
+                        <!-- Upcoming Events -->
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>Upcoming Events</h3>
+                                <a href="#" class="view-all">View All</a>
+                            </div>
+                            <div class="section-content">
+                                <div class="event-item">
+                                    <div class="event-date">
+                                        <div class="day">15</div>
+                                        <div class="month">NOV</div>
+                                    </div>
+                                    <div class="event-info">
+                                        <h4>Annual Alumni Reunion 2023</h4>
+                                        <div class="event-meta">
+                                            <span><i class="fas fa-clock"></i> 6:00 PM</span>
+                                            <span><i class="fas fa-map-marker-alt"></i> Campus Auditorium</span>
+                                        </div>
+                                        <p>Join fellow alumni for an evening of networking and reminiscing.</p>
+                                        <button class="btn-small">Register</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="event-item">
+                                    <div class="event-date">
+                                        <div class="day">22</div>
+                                        <div class="month">NOV</div>
+                                    </div>
+                                    <div class="event-info">
+                                        <h4>Career Development Workshop</h4>
+                                        <div class="event-meta">
+                                            <span><i class="fas fa-clock"></i> 2:00 PM</span>
+                                            <span><i class="fas fa-video"></i> Virtual</span>
+                                        </div>
+                                        <p>Learn from industry experts about advancing your career.</p>
+                                        <button class="btn-small">Register</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Opportunities -->
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>Recommended Jobs</h3>
+                                <a href="#" class="view-all">View All</a>
+                            </div>
+                            <div class="section-content">
+                                <!-- Job items will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="right-column">
+                        <!-- Recent Connections -->
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>Recent Connections</h3>
+                                <a href="#" class="view-all">View All</a>
+                            </div>
+                            <div class="section-content">
+                                <div class="connection-item">
+                                    <div class="connection-avatar">
+                                        <span>SA</span>
+                                    </div>
+                                    <div class="connection-info">
+                                        <h4>Sarah Johnson</h4>
+                                        <p>Software Engineer at Google</p>
+                                        <p>Class of 2018</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="connection-item">
+                                    <div class="connection-avatar">
+                                        <span>MJ</span>
+                                    </div>
+                                    <div class="connection-info">
+                                        <h4>Mike Chen</h4>
+                                        <p>Product Manager at Microsoft</p>
+                                        <p>Class of 2015</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="connection-item">
+                                    <div class="connection-avatar">
+                                        <span>EP</span>
+                                    </div>
+                                    <div class="connection-info">
+                                        <h4>Emily Parker</h4>
+                                        <p>Data Scientist at Amazon</p>
+                                        <p>Class of 2019</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>Quick Actions</h3>
+                            </div>
+                            <div class="section-content">
+                                <button class="btn-small" style="width: 100%; margin-bottom: 0.5rem;">
+                                    <i class="fas fa-edit"></i> Update Profile
+                                </button>
+                                <button class="btn-small" style="width: 100%; margin-bottom: 0.5rem;">
+                                    <i class="fas fa-share-alt"></i> Share Profile
+                                </button>
+                                <button class="btn-small" style="width: 100%; margin-bottom: 0.5rem;">
+                                    <i class="fas fa-search"></i> Find Alumni
+                                </button>
+                                <button class="btn-small" style="width: 100%;">
+                                    <i class="fas fa-calendar-plus"></i> Create Event
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+
+        // Sample data - in real app, this would come from API
+        const userData = {
+            name: 'John Doe',
+            role: 'Alumni',
+            stats: {
+                connections: 147,
+                events: 5,
+                jobs: 23,
+                mentors: 12
+            }
+        };
+
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // Load user data from API
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    updateDashboard(data.user);
+                } else {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        function updateDashboard(user) {
+            document.querySelector('.user-name').textContent = user.fullName;
+            document.querySelector('.user-role').textContent = user.role;
+            document.querySelector('.welcome-section h1').textContent = `Welcome back, ${user.firstName}! 👋`;
+            
+            // Update avatar with initials
+            const initials = user.firstName.charAt(0) + user.lastName.charAt(0);
+            document.querySelector('.user-avatar span').textContent = initials;
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+        });
+    </script>
+
+    <script>
+// Replace the existing authentication check script with this updated version
+document.addEventListener('DOMContentLoaded', function() {
+    // Check authentication
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('userRole');
+    const userName = localStorage.getItem('userName');
+    const userFirstName = localStorage.getItem('userFirstName');
+    const userEmail = localStorage.getItem('userEmail');
+
+    if (!token || !userRole) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Update user interface
+    updateUserInterface({
+        name: userName,
+        firstName: userFirstName,
+        role: userRole,
+        email: userEmail
+    });
+
+    // Customize dashboard based on role
+    customizeDashboardForRole(userRole);
+});
+
+function updateUserInterface(user) {
+    // Update welcome message
+    document.querySelector('.welcome-section h1').textContent = 
+        `Welcome back, ${user.firstName}! 👋`;
+
+    // Update user info in header
+    document.querySelector('.user-name').textContent = user.name;
+    document.querySelector('.user-role').textContent = user.role;
+
+    // Update avatar initials
+    const initials = user.name.split(' ')
+        .map(name => name[0])
+        .join('')
+        .toUpperCase();
+    document.querySelector('.user-avatar span').textContent = initials;
+}
+
+// Add logout handler to user menu
+document.querySelector('.user-info').addEventListener('click', function() {
+    if (confirm('Are you sure you want to logout?')) {
+        // Clear all stored data
+        localStorage.clear();
+        // Redirect to login
+        window.location.href = 'login.html';
+    }
+});
+</script>
+</body>
+</html>

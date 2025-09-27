@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CONNEXT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse the same CSS variables and base styles from the main page */
+        :root {
+            --primary-color: #1a4f8e;
+            --secondary-color: #3a7bd5;
+            --accent-color: #f64f59;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --success-color: #28a745;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --transition: all 0.3s ease;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: var(--light-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        /* Auth Section */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding: 2rem 0;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 450px;
+            padding: 2.5rem;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--gray-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 79, 142, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 0.8rem 1.8rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .auth-link {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+
+        .copyright {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo"><i class="fas fa-graduation-cap"></i>AlumniConnect</a>
+        </div>
+    </header>
+
+    <section class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">Login to Your Account</h1>
+                <p class="auth-subtitle">Welcome back! Please enter your details</p>
+            </div>
+
+            <form>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn">Sign In</button>
+                </div>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="register.html" class="auth-link">Register now</a></p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2023 AlumniConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.querySelector('form');
+    
+    // Check if already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+        window.location.href = 'dashboard.html';
+        return;
+    }
+    
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Basic validation
+        if (!email || !password) {
+            showError('Please enter both email and password');
+            return;
+        }
+        
+        try {
+            // Mock user validation - replace with actual API call in production
+            const validUsers = {
+                'alumni@example.com': { 
+                    password: 'alumni123', 
+                    role: 'alumni',
+                    name: 'John Doe',
+                    firstName: 'John',
+                    lastName: 'Doe'
+                },
+                'student@example.com': { 
+                    password: 'student123', 
+                    role: 'student',
+                    name: 'Sarah Smith',
+                    firstName: 'Sarah',
+                    lastName: 'Smith'
+                },
+                'institute@example.com': { 
+                    password: 'institute123', 
+                    role: 'institute',
+                    name: 'Admin User',
+                    firstName: 'Admin',
+                    lastName: 'User'
+                }
+            };
+
+            const user = validUsers[email];
+            if (user && user.password === password) {
+                // Store user data
+                localStorage.setItem('token', 'mock-token-' + Date.now());
+                localStorage.setItem('userRole', user.role);
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', user.name);
+                localStorage.setItem('userFirstName', user.firstName);
+                localStorage.setItem('userLastName', user.lastName);
+
+                // Show success message and redirect
+                showSuccess('Login successful! Redirecting to dashboard...');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } else {
+                throw new Error('Invalid credentials');
+            }
+        } catch (error) {
+            showError(error.message);
+        }
+    });
+
+    function showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.style.color = '#f64f59';
+        errorDiv.style.marginTop = '10px';
+        errorDiv.style.textAlign = 'center';
+        errorDiv.textContent = message;
+        
+        const existingError = loginForm.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        loginForm.appendChild(errorDiv);
+    }
+
+    function showSuccess(message) {
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success-message';
+        successDiv.style.color = '#28a745';
+        successDiv.style.marginTop = '10px';
+        successDiv.style.textAlign = 'center';
+        successDiv.textContent = message;
+        
+        const existingMessage = loginForm.querySelector('.success-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+        
+        loginForm.appendChild(successDiv);
+    }
+});
+</script>
+</body>
+</html>
