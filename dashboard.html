@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - AlumniConnect</title>
+    <title>Dashboard - CONNEXT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -82,6 +82,7 @@
             text-decoration: none;
             transition: var(--transition);
             border-left: 3px solid transparent;
+            cursor: pointer;
         }
 
         .nav-item:hover, .nav-item.active {
@@ -140,12 +141,14 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            position: relative;
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 0.8rem;
+            cursor: pointer;
         }
 
         .user-avatar {
@@ -165,6 +168,37 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            min-width: 200px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown.active {
+            display: block;
+        }
+
+        .user-dropdown-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            color: var(--dark-color);
+            transition: var(--transition);
+        }
+
+        .user-dropdown-item:hover {
+            background-color: var(--light-color);
         }
 
         .notification-bell {
@@ -188,9 +222,78 @@
             justify-content: center;
         }
 
+        .notification-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            width: 350px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+
+        .notification-dropdown.active {
+            display: block;
+        }
+
+        .notification-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .notification-item:hover {
+            background-color: var(--light-color);
+        }
+
+        .notification-item.unread {
+            background-color: rgba(26, 79, 142, 0.05);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-top: 0.3rem;
+        }
+
         /* Dashboard Content */
         .dashboard-content {
             padding: 2rem;
+            display: none;
+        }
+
+        .dashboard-content.active {
+            display: block;
         }
 
         .welcome-section {
@@ -230,6 +333,7 @@
             align-items: center;
             gap: 1rem;
             transition: var(--transition);
+            cursor: pointer;
         }
 
         .stat-card:hover {
@@ -409,9 +513,653 @@
             color: var(--gray-color);
         }
 
+        /* Profile Section */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1rem;
+            border: 5px solid white;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .profile-stat {
+            text-align: center;
+        }
+
+        .profile-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .profile-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .profile-sidebar {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+
+        .profile-main {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--gray-color);
+        }
+
+        .edit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .edit-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Network Section */
+        .network-filters {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            background: white;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .user-card-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+            border: 3px solid white;
+        }
+
+        .user-card-body {
+            padding: 1.5rem;
+        }
+
+        .user-card-info {
+            margin-bottom: 1rem;
+        }
+
+        .user-card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .connect-btn {
+            flex: 1;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .connect-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .message-btn {
+            background: var(--light-color);
+            color: var(--dark-color);
+            border: none;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .message-btn:hover {
+            background: #e9ecef;
+        }
+
+        /* Events Section */
+        .events-calendar {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .calendar-day.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-day.has-event {
+            background: rgba(26, 79, 142, 0.1);
+        }
+
+        .events-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .event-card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .event-card-body {
+            padding: 1.5rem;
+        }
+
+        .event-card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Jobs Section */
+        .jobs-filters {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .jobs-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .job-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .job-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-company {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+
+        .job-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .job-tag {
+            background: var(--light-color);
+            color: var(--dark-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+        }
+
+        .apply-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .apply-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Mentorship Section */
+        .mentorship-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .mentorship-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .mentorship-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .mentorship-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .mentorship-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .mentorship-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Messages Section */
+        .messages-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            height: 70vh;
+        }
+
+        .conversations-list {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .conversations-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .conversation-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .conversation-item:hover, .conversation-item.active {
+            background: var(--light-color);
+        }
+
+        .conversation-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .conversation-preview {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-window {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            max-width: 70%;
+        }
+
+        .message.sent {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message-content {
+            background: var(--light-color);
+            padding: 0.8rem 1rem;
+            border-radius: 1rem;
+            display: inline-block;
+        }
+
+        .message.sent .message-content {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-top: 0.3rem;
+        }
+
+        .chat-input {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+
+        .message-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            resize: none;
+        }
+
+        /* Settings Section */
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 2rem;
+        }
+
+        .settings-tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .settings-tab.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .settings-content {
+            display: none;
+        }
+
+        .settings-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .save-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .save-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Toast Message */
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: var(--gray-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
         /* Mobile Responsive */
         @media screen and (max-width: 992px) {
-            .sections-grid {
+            .sections-grid, .profile-content, .messages-container, .form-row {
                 grid-template-columns: 1fr;
             }
         }
@@ -440,6 +1188,11 @@
             .mobile-menu-btn {
                 display: block;
             }
+
+            .notification-dropdown {
+                width: 300px;
+                right: -50px;
+            }
         }
 
         .mobile-menu-btn {
@@ -464,38 +1217,38 @@
             </div>
             
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active">
+                <div class="nav-item active" data-section="dashboard">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
-                </a>
-                <a href="#" class="nav-item">
+                </div>
+                <div class="nav-item" data-section="profile">
                     <i class="fas fa-user"></i>
                     <span>My Profile</span>
-                </a>
-                <a href="#" class="nav-item">
+                </div>
+                <div class="nav-item" data-section="network">
                     <i class="fas fa-network-wired"></i>
                     <span>Network</span>
-                </a>
-                <a href="#" class="nav-item">
+                </div>
+                <div class="nav-item" data-section="events">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Events</span>
-                </a>
-                <a href="#" class="nav-item">
+                </div>
+                <div class="nav-item" data-section="jobs">
                     <i class="fas fa-briefcase"></i>
                     <span>Jobs</span>
-                </a>
-                <a href="#" class="nav-item">
+                </div>
+                <div class="nav-item" data-section="mentorship">
                     <i class="fas fa-hands-helping"></i>
                     <span>Mentorship</span>
-                </a>
-                <a href="#" class="nav-item">
+                </div>
+                <div class="nav-item" data-section="messages">
                     <i class="fas fa-comments"></i>
                     <span>Messages</span>
-                </a>
-                <a href="#" class="nav-item">
+                </div>
+                <div class="nav-item" data-section="settings">
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
-                </a>
+                </div>
             </nav>
         </aside>
 
@@ -513,12 +1266,46 @@
                 </div>
                 
                 <div class="user-menu">
-                    <div class="notification-bell">
+                    <div class="notification-bell" id="notificationBell">
                         <i class="fas fa-bell"></i>
                         <span class="notification-count">3</span>
+                        
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                <h4>Notifications</h4>
+                                <span class="view-all">Mark all as read</span>
+                            </div>
+                            <div class="notification-item unread">
+                                <div class="notification-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <p><strong>Sarah Johnson</strong> sent you a connection request</p>
+                                    <div class="notification-time">2 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <p>Reminder: Alumni Reunion tomorrow at 6:00 PM</p>
+                                    <div class="notification-time">1 day ago</div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <p>New job matching your profile: Senior Developer at TechCorp</p>
+                                    <div class="notification-time">2 days ago</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="user-info">
+                    <div class="user-info" id="userInfo">
                         <div class="user-avatar">
                             <span>JD</span>
                         </div>
@@ -527,12 +1314,31 @@
                             <div class="user-role">Alumni</div>
                         </div>
                         <i class="fas fa-chevron-down"></i>
+                        
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#" class="user-dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="#" class="user-dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <a href="#" class="user-dropdown-item">
+                                <i class="fas fa-question-circle"></i>
+                                <span>Help & Support</span>
+                            </a>
+                            <div class="user-dropdown-item" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            <!-- Dashboard Content -->
-            <section class="dashboard-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="dashboard-content active">
                 <!-- Welcome Section -->
                 <div class="welcome-section">
                     <h1>Welcome back, John! 👋</h1>
@@ -541,7 +1347,7 @@
 
                 <!-- Statistics Grid -->
                 <div class="stats-grid">
-                    <div class="stat-card">
+                    <div class="stat-card" data-section="network">
                         <div class="stat-icon connections">
                             <i class="fas fa-users"></i>
                         </div>
@@ -551,7 +1357,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card">
+                    <div class="stat-card" data-section="events">
                         <div class="stat-icon events">
                             <i class="fas fa-calendar"></i>
                         </div>
@@ -561,7 +1367,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card">
+                    <div class="stat-card" data-section="jobs">
                         <div class="stat-icon jobs">
                             <i class="fas fa-briefcase"></i>
                         </div>
@@ -571,7 +1377,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card">
+                    <div class="stat-card" data-section="mentorship">
                         <div class="stat-icon mentors">
                             <i class="fas fa-hands-helping"></i>
                         </div>
@@ -634,7 +1440,26 @@
                                 <a href="#" class="view-all">View All</a>
                             </div>
                             <div class="section-content">
-                                <!-- Job items will be populated dynamically -->
+                                <div class="job-card">
+                                    <div class="job-card-header">
+                                        <div>
+                                            <div class="job-title">Senior Software Engineer</div>
+                                            <div class="job-company">TechCorp Inc.</div>
+                                        </div>
+                                        <div class="job-salary">$120k - $150k</div>
+                                    </div>
+                                    <div class="job-meta">
+                                        <span><i class="fas fa-map-marker-alt"></i> San Francisco, CA</span>
+                                        <span><i class="fas fa-briefcase"></i> Full-time</span>
+                                    </div>
+                                    <p>We're looking for an experienced software engineer to join our growing team...</p>
+                                    <div class="job-tags">
+                                        <span class="job-tag">JavaScript</span>
+                                        <span class="job-tag">React</span>
+                                        <span class="job-tag">Node.js</span>
+                                    </div>
+                                    <button class="apply-btn">Apply Now</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -706,72 +1531,570 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="dashboard-content">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <span>JD</span>
+                    </div>
+                    <h1>John Doe</h1>
+                    <p>Software Engineer at TechCorp | Class of 2018</p>
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <div class="profile-stat-value">147</div>
+                            <div class="profile-stat-label">Connections</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-value">23</div>
+                            <div class="profile-stat-label">Events Attended</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-value">5</div>
+                            <div class="profile-stat-label">Mentees</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-content">
+                    <div class="profile-sidebar">
+                        <h3>Profile Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span>john.doe@example.com</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Phone:</span>
+                            <span>(555) 123-4567</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Location:</span>
+                            <span>San Francisco, CA</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Graduation Year:</span>
+                            <span>2018</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Degree:</span>
+                            <span>B.S. Computer Science</span>
+                        </div>
+                        <button class="edit-btn" style="width: 100%; margin-top: 1rem;">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                    </div>
+
+                    <div class="profile-main">
+                        <h3>About Me</h3>
+                        <p>I'm a passionate software engineer with 5+ years of experience in full-stack development. Currently working at TechCorp where I lead the frontend team for our flagship product. I'm always excited to connect with fellow alumni and help current students navigate their career paths.</p>
+                        
+                        <h3 style="margin-top: 2rem;">Skills</h3>
+                        <div class="job-tags">
+                            <span class="job-tag">JavaScript</span>
+                            <span class="job-tag">React</span>
+                            <span class="job-tag">Node.js</span>
+                            <span class="job-tag">Python</span>
+                            <span class="job-tag">AWS</span>
+                            <span class="job-tag">Docker</span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2rem;">Experience</h3>
+                        <div class="info-item">
+                            <span class="info-label">TechCorp Inc.</span>
+                            <span>2020 - Present</span>
+                        </div>
+                        <p>Senior Software Engineer</p>
+                        
+                        <div class="info-item">
+                            <span class="info-label">StartUpXYZ</span>
+                            <span>2018 - 2020</span>
+                        </div>
+                        <p>Full Stack Developer</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Network Section -->
+            <section id="network" class="dashboard-content">
+                <div class="network-filters">
+                    <h3>Find Alumni</h3>
+                    <div class="filter-group">
+                        <select class="filter-select">
+                            <option>All Industries</option>
+                            <option>Technology</option>
+                            <option>Finance</option>
+                            <option>Healthcare</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>All Locations</option>
+                            <option>United States</option>
+                            <option>Europe</option>
+                            <option>Asia</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>All Graduation Years</option>
+                            <option>2010-2015</option>
+                            <option>2016-2020</option>
+                            <option>2021-2023</option>
+                        </select>
+                        <input type="text" class="filter-select" placeholder="Search by name or company">
+                    </div>
+                </div>
+
+                <div class="users-grid">
+                    <!-- User cards will be populated dynamically -->
+                    <div class="user-card">
+                        <div class="user-card-header">
+                            <div class="user-card-avatar">
+                                <span>SJ</span>
+                            </div>
+                            <h3>Sarah Johnson</h3>
+                            <p>Software Engineer at Google</p>
+                        </div>
+                        <div class="user-card-body">
+                            <div class="user-card-info">
+                                <p><i class="fas fa-graduation-cap"></i> Class of 2018</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Mountain View, CA</p>
+                                <p><i class="fas fa-briefcase"></i> Technology Industry</p>
+                            </div>
+                            <div class="user-card-actions">
+                                <button class="connect-btn">Connect</button>
+                                <button class="message-btn"><i class="fas fa-envelope"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-card">
+                        <div class="user-card-header">
+                            <div class="user-card-avatar">
+                                <span>MC</span>
+                            </div>
+                            <h3>Mike Chen</h3>
+                            <p>Product Manager at Microsoft</p>
+                        </div>
+                        <div class="user-card-body">
+                            <div class="user-card-info">
+                                <p><i class="fas fa-graduation-cap"></i> Class of 2015</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Seattle, WA</p>
+                                <p><i class="fas fa-briefcase"></i> Technology Industry</p>
+                            </div>
+                            <div class="user-card-actions">
+                                <button class="connect-btn">Connect</button>
+                                <button class="message-btn"><i class="fas fa-envelope"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-card">
+                        <div class="user-card-header">
+                            <div class="user-card-avatar">
+                                <span>EP</span>
+                            </div>
+                            <h3>Emily Parker</h3>
+                            <p>Data Scientist at Amazon</p>
+                        </div>
+                        <div class="user-card-body">
+                            <div class="user-card-info">
+                                <p><i class="fas fa-graduation-cap"></i> Class of 2019</p>
+                                <p><i class="fas fa-map-marker-alt"></i> New York, NY</p>
+                                <p><i class="fas fa-briefcase"></i> Technology Industry</p>
+                            </div>
+                            <div class="user-card-actions">
+                                <button class="connect-btn">Connect</button>
+                                <button class="message-btn"><i class="fas fa-envelope"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Events Section -->
+            <section id="events" class="dashboard-content">
+                <div class="events-calendar">
+                    <div class="calendar-header">
+                        <h3>November 2023</h3>
+                        <div>
+                            <button class="btn-small"><i class="fas fa-chevron-left"></i></button>
+                            <button class="btn-small"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day">Sun</div>
+                        <div class="calendar-day">Mon</div>
+                        <div class="calendar-day">Tue</div>
+                        <div class="calendar-day">Wed</div>
+                        <div class="calendar-day">Thu</div>
+                        <div class="calendar-day">Fri</div>
+                        <div class="calendar-day">Sat</div>
+                        
+                        <!-- Calendar days will be populated dynamically -->
+                        <div class="calendar-day">29</div>
+                        <div class="calendar-day">30</div>
+                        <div class="calendar-day">31</div>
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day">3</div>
+                        <div class="calendar-day">4</div>
+                        <!-- ... more days -->
+                        <div class="calendar-day has-event">15</div>
+                        <!-- ... more days -->
+                        <div class="calendar-day has-event">22</div>
+                        <!-- ... more days -->
+                    </div>
+                </div>
+
+                <div class="events-list">
+                    <div class="event-card">
+                        <div class="event-card-header">
+                            <h3>Annual Alumni Reunion 2023</h3>
+                            <p>November 15, 2023 • 6:00 PM - 9:00 PM</p>
+                        </div>
+                        <div class="event-card-body">
+                            <p>Join us for an evening of reconnecting with old friends, networking with fellow alumni, and celebrating our shared experiences. Dinner and drinks will be provided.</p>
+                            <div class="event-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> Campus Auditorium</span>
+                                <span><i class="fas fa-users"></i> 45 attendees</span>
+                            </div>
+                            <div class="event-card-actions">
+                                <button class="btn-small">Register</button>
+                                <button class="btn-small">Add to Calendar</button>
+                                <button class="btn-small">Share</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-card-header">
+                            <h3>Career Development Workshop</h3>
+                            <p>November 22, 2023 • 2:00 PM - 4:00 PM</p>
+                        </div>
+                        <div class="event-card-body">
+                            <p>Learn from industry experts about advancing your career, negotiating salaries, and building your professional network. This virtual workshop is open to all alumni.</p>
+                            <div class="event-meta">
+                                <span><i class="fas fa-video"></i> Virtual Event</span>
+                                <span><i class="fas fa-users"></i> 32 attendees</span>
+                            </div>
+                            <div class="event-card-actions">
+                                <button class="btn-small">Register</button>
+                                <button class="btn-small">Add to Calendar</button>
+                                <button class="btn-small">Share</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Jobs Section -->
+            <section id="jobs" class="dashboard-content">
+                <div class="jobs-filters">
+                    <h3>Job Opportunities</h3>
+                    <div class="filter-group">
+                        <select class="filter-select">
+                            <option>All Job Types</option>
+                            <option>Full-time</option>
+                            <option>Part-time</option>
+                            <option>Contract</option>
+                            <option>Internship</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>All Locations</option>
+                            <option>Remote</option>
+                            <option>On-site</option>
+                            <option>Hybrid</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>All Experience Levels</option>
+                            <option>Entry Level</option>
+                            <option>Mid Level</option>
+                            <option>Senior Level</option>
+                        </select>
+                        <input type="text" class="filter-select" placeholder="Search jobs...">
+                    </div>
+                </div>
+
+                <div class="jobs-grid">
+                    <div class="job-card">
+                        <div class="job-card-header">
+                            <div>
+                                <div class="job-title">Senior Software Engineer</div>
+                                <div class="job-company">TechCorp Inc.</div>
+                            </div>
+                            <div class="job-salary">$120k - $150k</div>
+                        </div>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> San Francisco, CA</span>
+                            <span><i class="fas fa-briefcase"></i> Full-time</span>
+                            <span><i class="fas fa-clock"></i> Posted 2 days ago</span>
+                        </div>
+                        <p>We're looking for an experienced software engineer to join our growing team. You'll be working on cutting-edge technologies and have the opportunity to make a significant impact.</p>
+                        <div class="job-tags">
+                            <span class="job-tag">JavaScript</span>
+                            <span class="job-tag">React</span>
+                            <span class="job-tag">Node.js</span>
+                            <span class="job-tag">AWS</span>
+                        </div>
+                        <button class="apply-btn">Apply Now</button>
+                    </div>
+
+                    <div class="job-card">
+                        <div class="job-card-header">
+                            <div>
+                                <div class="job-title">Product Manager</div>
+                                <div class="job-company">InnovateSolutions</div>
+                            </div>
+                            <div class="job-salary">$100k - $130k</div>
+                        </div>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Remote</span>
+                            <span><i class="fas fa-briefcase"></i> Full-time</span>
+                            <span><i class="fas fa-clock"></i> Posted 5 days ago</span>
+                        </div>
+                        <p>Join our product team to help shape the future of our platform. We're looking for someone with a strong technical background and excellent communication skills.</p>
+                        <div class="job-tags">
+                            <span class="job-tag">Product Management</span>
+                            <span class="job-tag">Agile</span>
+                            <span class="job-tag">UX</span>
+                        </div>
+                        <button class="apply-btn">Apply Now</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mentorship Section -->
+            <section id="mentorship" class="dashboard-content">
+                <div class="mentorship-options">
+                    <div class="mentorship-card">
+                        <div class="mentorship-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>Find a Mentor</h3>
+                        <p>Connect with experienced alumni who can guide you in your career journey. Get personalized advice and support from professionals in your field.</p>
+                        <button class="mentorship-btn">Browse Mentors</button>
+                    </div>
+
+                    <div class="mentorship-card">
+                        <div class="mentorship-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h3>Become a Mentor</h3>
+                        <p>Share your knowledge and experience with current students and recent graduates. Make a difference in someone's career path.</p>
+                        <button class="mentorship-btn">Start Mentoring</button>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3>Recommended Mentors</h3>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    <div class="section-content">
+                        <div class="users-grid">
+                            <div class="user-card">
+                                <div class="user-card-header">
+                                    <div class="user-card-avatar">
+                                        <span>RJ</span>
+                                    </div>
+                                    <h3>Robert Johnson</h3>
+                                    <p>CTO at StartupXYZ</p>
+                                </div>
+                                <div class="user-card-body">
+                                    <div class="user-card-info">
+                                        <p><i class="fas fa-graduation-cap"></i> Class of 2010</p>
+                                        <p><i class="fas fa-map-marker-alt"></i> Austin, TX</p>
+                                        <p>Specializes in: Entrepreneurship, Leadership, Tech Startups</p>
+                                    </div>
+                                    <div class="user-card-actions">
+                                        <button class="connect-btn">Request Mentorship</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="user-card">
+                                <div class="user-card-header">
+                                    <div class="user-card-avatar">
+                                        <span>LS</span>
+                                    </div>
+                                    <h3>Lisa Smith</h3>
+                                    <p>Senior Director at BigCorp</p>
+                                </div>
+                                <div class="user-card-body">
+                                    <div class="user-card-info">
+                                        <p><i class="fas fa-graduation-cap"></i> Class of 2012</p>
+                                        <p><i class="fas fa-map-marker-alt"></i> Chicago, IL</p>
+                                        <p>Specializes in: Management, Career Growth, Corporate Strategy</p>
+                                    </div>
+                                    <div class="user-card-actions">
+                                        <button class="connect-btn">Request Mentorship</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Messages Section -->
+            <section id="messages" class="dashboard-content">
+                <div class="messages-container">
+                    <div class="conversations-list">
+                        <div class="conversations-header">
+                            <h3>Messages</h3>
+                        </div>
+                        <div class="conversation-item active">
+                            <div class="conversation-info">
+                                <h4>Sarah Johnson</h4>
+                                <span>2 hours ago</span>
+                            </div>
+                            <div class="conversation-preview">Hey! I saw your profile and noticed we both work in tech. Would love to connect!</div>
+                        </div>
+                        <div class="conversation-item">
+                            <div class="conversation-info">
+                                <h4>Alumni Network</h4>
+                                <span>1 day ago</span>
+                            </div>
+                            <div class="conversation-preview">Reminder: Alumni Reunion is this weekend. Don't forget to RSVP!</div>
+                        </div>
+                        <div class="conversation-item">
+                            <div class="conversation-info">
+                                <h4>Mike Chen</h4>
+                                <span>3 days ago</span>
+                            </div>
+                            <div class="conversation-preview">Thanks for connecting! Let me know if you're ever in Seattle.</div>
+                        </div>
+                    </div>
+
+                    <div class="chat-window">
+                        <div class="chat-header">
+                            <h3>Sarah Johnson</h3>
+                            <p>Software Engineer at Google</p>
+                        </div>
+                        <div class="chat-messages">
+                            <div class="message received">
+                                <div class="message-content">
+                                    Hey! I saw your profile and noticed we both work in tech. Would love to connect!
+                                </div>
+                                <div class="message-time">2 hours ago</div>
+                            </div>
+                            <div class="message sent">
+                                <div class="message-content">
+                                    Hi Sarah! Thanks for reaching out. I'd be happy to connect. What are you working on at Google?
+                                </div>
+                                <div class="message-time">1 hour ago</div>
+                            </div>
+                            <div class="message received">
+                                <div class="message-content">
+                                    I'm on the Cloud team, focusing on developer tools. How about you at TechCorp?
+                                </div>
+                                <div class="message-time">30 minutes ago</div>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <textarea class="message-input" placeholder="Type a message..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="dashboard-content">
+                <div class="settings-tabs">
+                    <div class="settings-tab active" data-tab="profile">Profile Settings</div>
+                    <div class="settings-tab" data-tab="privacy">Privacy</div>
+                    <div class="settings-tab" data-tab="notifications">Notifications</div>
+                    <div class="settings-tab" data-tab="account">Account</div>
+                </div>
+
+                <div id="profile-settings" class="settings-content active">
+                    <h3>Profile Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-input" value="John">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-input" value="Doe">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" value="john.doe@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bio</label>
+                        <textarea class="form-input" rows="4">I'm a passionate software engineer with 5+ years of experience in full-stack development.</textarea>
+                    </div>
+                    <button class="save-btn">Save Changes</button>
+                </div>
+
+                <div id="privacy-settings" class="settings-content">
+                    <h3>Privacy Settings</h3>
+                    <div class="form-group">
+                        <label class="form-label">Profile Visibility</label>
+                        <select class="form-input">
+                            <option>Public (Anyone can see your profile)</option>
+                            <option>Alumni Only</option>
+                            <option>Connections Only</option>
+                            <option>Private</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Information</label>
+                        <select class="form-input">
+                            <option>Show to Connections</option>
+                            <option>Show to Alumni</option>
+                            <option>Show to Everyone</option>
+                            <option>Hide</option>
+                        </select>
+                    </div>
+                    <button class="save-btn">Save Changes</button>
+                </div>
+
+                <div id="notification-settings" class="settings-content">
+                    <h3>Notification Preferences</h3>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" checked> Email Notifications
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" checked> Connection Requests
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" checked> Event Reminders
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" checked> Job Alerts
+                        </label>
+                    </div>
+                    <button class="save-btn">Save Changes</button>
+                </div>
+
+                <div id="account-settings" class="settings-content">
+                    <h3>Account Settings</h3>
+                    <div class="form-group">
+                        <label class="form-label">Change Password</label>
+                        <input type="password" class="form-input" placeholder="Current Password">
+                        <input type="password" class="form-input" placeholder="New Password" style="margin-top: 0.5rem;">
+                        <input type="password" class="form-input" placeholder="Confirm New Password" style="margin-top: 0.5rem;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Delete Account</label>
+                        <p>Once you delete your account, there is no going back. Please be certain.</p>
+                        <button class="save-btn" style="background: var(--accent-color);">Delete Account</button>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
     <script>
-        // Mobile menu toggle
-        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        });
-
-        // Sample data - in real app, this would come from API
-        const userData = {
-            name: 'John Doe',
-            role: 'Alumni',
-            stats: {
-                connections: 147,
-                events: 5,
-                jobs: 23,
-                mentors: 12
-            }
-        };
-
-        // Check authentication
-        const token = localStorage.getItem('token');
-        if (!token) {
-            window.location.href = 'login.html';
-        }
-
-        // Load user data from API
-        async function loadUserData() {
-            try {
-                const response = await fetch('/api/auth/me', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    updateDashboard(data.user);
-                } else {
-                    localStorage.removeItem('token');
-                    window.location.href = 'login.html';
-                }
-            } catch (error) {
-                console.error('Error loading user data:', error);
-            }
-        }
-
-        function updateDashboard(user) {
-            document.querySelector('.user-name').textContent = user.fullName;
-            document.querySelector('.user-role').textContent = user.role;
-            document.querySelector('.welcome-section h1').textContent = `Welcome back, ${user.firstName}! 👋`;
-            
-            // Update avatar with initials
-            const initials = user.firstName.charAt(0) + user.lastName.charAt(0);
-            document.querySelector('.user-avatar span').textContent = initials;
-        }
-
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            loadUserData();
-        });
-    </script>
-
-    <script>
-// Replace the existing authentication check script with this updated version
+// Enhanced Dashboard with Full Functionality
 document.addEventListener('DOMContentLoaded', function() {
     // Check authentication
     const token = localStorage.getItem('token');
@@ -781,48 +2104,707 @@ document.addEventListener('DOMContentLoaded', function() {
     const userEmail = localStorage.getItem('userEmail');
 
     if (!token || !userRole) {
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
     }
 
-    // Update user interface
-    updateUserInterface({
+    // Initialize dashboard with user data
+    initializeDashboard({
         name: userName,
         firstName: userFirstName,
-        role: userRole,
-        email: userEmail
+        email: userEmail,
+        role: userRole
     });
-
-    // Customize dashboard based on role
-    customizeDashboardForRole(userRole);
 });
 
-function updateUserInterface(user) {
-    // Update welcome message
-    document.querySelector('.welcome-section h1').textContent = 
-        `Welcome back, ${user.firstName}! 👋`;
-
-    // Update user info in header
-    document.querySelector('.user-name').textContent = user.name;
-    document.querySelector('.user-role').textContent = user.role;
-
-    // Update avatar initials
-    const initials = user.name.split(' ')
-        .map(name => name[0])
-        .join('')
-        .toUpperCase();
-    document.querySelector('.user-avatar span').textContent = initials;
+function initializeDashboard(user) {
+    updateUserInterface(user);
+    setupNavigation();
+    setupNotifications();
+    setupProfileSection();
+    setupNetworkSection();
+    setupEventsSection();
+    setupJobsSection();
+    setupMentorshipSection();
+    setupMessagesSection();
+    setupSettingsSection();
+    setupQuickActions();
 }
 
-// Add logout handler to user menu
-document.querySelector('.user-info').addEventListener('click', function() {
-    if (confirm('Are you sure you want to logout?')) {
-        // Clear all stored data
-        localStorage.clear();
-        // Redirect to login
-        window.location.href = 'login.html';
+function updateUserInterface(user) {
+    // Update welcome messages
+    const welcomeMessages = document.querySelectorAll('h1');
+    welcomeMessages.forEach(h1 => {
+        if (h1.textContent.includes('John')) {
+            h1.textContent = h1.textContent.replace('John', user.firstName);
+        }
+    });
+
+    // Update user info in header and profile
+    document.querySelectorAll('.user-name').forEach(el => el.textContent = user.name);
+    document.querySelectorAll('.user-role').forEach(el => el.textContent = user.role);
+    
+    // Update email in profile
+    const emailElements = document.querySelectorAll('.info-item span');
+    emailElements.forEach(el => {
+        if (el.textContent.includes('john.doe@example.com')) {
+            el.textContent = user.email || 'john.doe@example.com';
+        }
+    });
+
+    // Update avatar initials
+    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+    document.querySelectorAll('.user-avatar span, .profile-avatar span').forEach(el => {
+        el.textContent = initials.substring(0, 2);
+    });
+}
+
+function setupNavigation() {
+    // Mobile menu toggle
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('active');
+    });
+
+    // Navigation between sections
+    const navItems = document.querySelectorAll('.nav-item');
+    const contentSections = document.querySelectorAll('.dashboard-content');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const sectionId = this.getAttribute('data-section');
+            
+            // Update active nav item
+            navItems.forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show corresponding section
+            contentSections.forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Close mobile menu
+            document.querySelector('.sidebar').classList.remove('active');
+
+            // Section-specific initialization
+            initializeSection(sectionId);
+        });
+    });
+
+    // Stat cards navigation
+    document.querySelectorAll('.stat-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const section = this.getAttribute('data-section');
+            navItems.forEach(nav => nav.classList.remove('active'));
+            document.querySelector(`.nav-item[data-section="${section}"]`).click();
+        });
+    });
+}
+
+function initializeSection(sectionId) {
+    switch(sectionId) {
+        case 'messages':
+            initializeChat();
+            break;
+        case 'events':
+            initializeCalendar();
+            break;
+        case 'profile':
+            initializeProfileEditor();
+            break;
     }
-});
+}
+
+function setupNotifications() {
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const userInfo = document.getElementById('userInfo');
+    const userDropdown = document.getElementById('userDropdown');
+
+    // Notification dropdown toggle
+    notificationBell.addEventListener('click', function(e) {
+        e.stopPropagation();
+        notificationDropdown.classList.toggle('active');
+        userDropdown.classList.remove('active');
+    });
+
+    // User dropdown toggle
+    userInfo.addEventListener('click', function(e) {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+        notificationDropdown.classList.remove('active');
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function() {
+        notificationDropdown.classList.remove('active');
+        userDropdown.classList.remove('active');
+    });
+
+    // Mark notifications as read
+    document.querySelectorAll('.notification-item').forEach(item => {
+        item.addEventListener('click', function() {
+            this.classList.remove('unread');
+            updateNotificationCount();
+        });
+    });
+
+    // Mark all as read
+    document.querySelector('.notification-header .view-all').addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.classList.remove('unread');
+        });
+        updateNotificationCount();
+    });
+
+    function updateNotificationCount() {
+        const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+        const countElement = document.querySelector('.notification-count');
+        countElement.textContent = unreadCount;
+        countElement.style.display = unreadCount > 0 ? 'flex' : 'none';
+    }
+}
+
+function setupProfileSection() {
+    // Edit profile button
+    document.querySelector('.edit-btn').addEventListener('click', function() {
+        const profileSection = document.getElementById('profile');
+        const settingsSection = document.getElementById('settings');
+        
+        // Switch to settings tab
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        document.querySelector('.nav-item[data-section="settings"]').classList.add('active');
+        
+        document.querySelectorAll('.dashboard-content').forEach(section => section.classList.remove('active'));
+        settingsSection.classList.add('active');
+        
+        // Activate profile settings tab
+        document.querySelectorAll('.settings-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelector('.settings-tab[data-tab="profile"]').classList.add('active');
+        
+        document.querySelectorAll('.settings-content').forEach(content => content.classList.remove('active'));
+        document.getElementById('profile-settings').classList.add('active');
+    });
+
+    // Profile stats interaction
+    document.querySelectorAll('.profile-stat').forEach(stat => {
+        stat.addEventListener('click', function() {
+            const value = this.querySelector('.profile-stat-value').textContent;
+            const label = this.querySelector('.profile-stat-label').textContent;
+            showToast(`You have ${value} ${label.toLowerCase()}`, 'info');
+        });
+    });
+}
+
+function setupNetworkSection() {
+    // Connect buttons
+    document.querySelectorAll('.connect-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userName = this.closest('.user-card').querySelector('h3').textContent;
+            this.textContent = 'Pending...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                showToast(`Connection request sent to ${userName}`, 'success');
+                this.textContent = 'Pending';
+            }, 1000);
+        });
+    });
+
+    // Message buttons
+    document.querySelectorAll('.message-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userName = this.closest('.user-card').querySelector('h3').textContent;
+            showToast(`Opening chat with ${userName}`, 'info');
+            
+            // Navigate to messages section
+            document.querySelector('.nav-item[data-section="messages"]').click();
+        });
+    });
+
+    // Network filters
+    document.querySelectorAll('.filter-select').forEach(select => {
+        select.addEventListener('change', function() {
+            filterNetworkUsers();
+        });
+    });
+
+    // Search functionality
+    const networkSearch = document.querySelector('.network-filters input');
+    networkSearch.addEventListener('input', filterNetworkUsers);
+}
+
+function filterNetworkUsers() {
+    const searchTerm = document.querySelector('.network-filters input').value.toLowerCase();
+    const industryFilter = document.querySelector('.network-filters select:nth-child(1)').value;
+    const locationFilter = document.querySelector('.network-filters select:nth-child(2)').value;
+    
+    document.querySelectorAll('.user-card').forEach(card => {
+        const userName = card.querySelector('h3').textContent.toLowerCase();
+        const userIndustry = card.querySelector('.user-card-info p:last-child').textContent.toLowerCase();
+        const userLocation = card.querySelector('.user-card-info p:nth-child(2)').textContent.toLowerCase();
+        
+        const matchesSearch = userName.includes(searchTerm);
+        const matchesIndustry = industryFilter === 'All Industries' || userIndustry.includes(industryFilter.toLowerCase());
+        const matchesLocation = locationFilter === 'All Locations' || userLocation.includes(locationFilter.toLowerCase());
+        
+        card.style.display = matchesSearch && matchesIndustry && matchesLocation ? 'block' : 'none';
+    });
+}
+
+function setupEventsSection() {
+    // Event registration buttons
+    document.querySelectorAll('.btn-small').forEach(btn => {
+        if (btn.textContent.includes('Register')) {
+            btn.addEventListener('click', function() {
+                const eventName = this.closest('.event-item, .event-card').querySelector('h4, h3').textContent;
+                this.textContent = 'Registered ✓';
+                this.disabled = true;
+                this.style.background = 'var(--success-color)';
+                showToast(`Successfully registered for ${eventName}`, 'success');
+            });
+        }
+    });
+
+    // Add to calendar buttons
+    document.querySelectorAll('.btn-small').forEach(btn => {
+        if (btn.textContent.includes('Add to Calendar')) {
+            btn.addEventListener('click', function() {
+                const eventName = this.closest('.event-card').querySelector('h3').textContent;
+                showToast(`${eventName} added to your calendar`, 'success');
+            });
+        }
+    });
+
+    // Share buttons
+    document.querySelectorAll('.btn-small').forEach(btn => {
+        if (btn.textContent.includes('Share')) {
+            btn.addEventListener('click', function() {
+                const eventName = this.closest('.event-card').querySelector('h3').textContent;
+                showToast(`Share link for ${eventName} copied to clipboard`, 'success');
+            });
+        }
+    });
+}
+
+function setupJobsSection() {
+    // Apply buttons
+    document.querySelectorAll('.apply-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const jobTitle = this.closest('.job-card').querySelector('.job-title').textContent;
+            const company = this.closest('.job-card').querySelector('.job-company').textContent;
+            
+            this.textContent = 'Applied ✓';
+            this.disabled = true;
+            this.style.background = 'var(--success-color)';
+            
+            showToast(`Application sent for ${jobTitle} at ${company}`, 'success');
+        });
+    });
+
+    // Job filters
+    document.querySelectorAll('.jobs-filters select').forEach(select => {
+        select.addEventListener('change', filterJobs);
+    });
+
+    // Job search
+    document.querySelector('.jobs-filters input').addEventListener('input', filterJobs);
+}
+
+function filterJobs() {
+    const searchTerm = document.querySelector('.jobs-filters input').value.toLowerCase();
+    const typeFilter = document.querySelector('.jobs-filters select:nth-child(1)').value;
+    const locationFilter = document.querySelector('.jobs-filters select:nth-child(2)').value;
+    
+    document.querySelectorAll('.job-card').forEach(card => {
+        const jobTitle = card.querySelector('.job-title').textContent.toLowerCase();
+        const jobType = card.querySelector('.job-meta span:nth-child(2)').textContent.toLowerCase();
+        const jobLocation = card.querySelector('.job-meta span:nth-child(1)').textContent.toLowerCase();
+        
+        const matchesSearch = jobTitle.includes(searchTerm);
+        const matchesType = typeFilter === 'All Job Types' || jobType.includes(typeFilter.toLowerCase());
+        const matchesLocation = locationFilter === 'All Locations' || jobLocation.includes(locationFilter.toLowerCase());
+        
+        card.style.display = matchesSearch && matchesType && matchesLocation ? 'block' : 'none';
+    });
+}
+
+function setupMentorshipSection() {
+    // Browse mentors button
+    document.querySelector('.mentorship-btn').addEventListener('click', function() {
+        showToast('Showing available mentors', 'info');
+        document.querySelector('.nav-item[data-section="network"]').click();
+    });
+
+    // Start mentoring button
+    document.querySelectorAll('.mentorship-btn')[1].addEventListener('click', function() {
+        showToast('Mentor application started', 'success');
+    });
+
+    // Request mentorship buttons
+    document.querySelectorAll('.connect-btn').forEach(btn => {
+        if (btn.textContent.includes('Request Mentorship')) {
+            btn.addEventListener('click', function() {
+                const mentorName = this.closest('.user-card').querySelector('h3').textContent;
+                this.textContent = 'Requested ✓';
+                this.disabled = true;
+                showToast(`Mentorship request sent to ${mentorName}`, 'success');
+            });
+        }
+    });
+}
+
+function setupMessagesSection() {
+    initializeChat();
+}
+
+function initializeChat() {
+    const conversationItems = document.querySelectorAll('.conversation-item');
+    const messageInput = document.querySelector('.message-input');
+    const chatMessages = document.querySelector('.chat-messages');
+
+    // Conversation selection
+    conversationItems.forEach(item => {
+        item.addEventListener('click', function() {
+            conversationItems.forEach(conv => conv.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update chat header
+            const userName = this.querySelector('h4').textContent;
+            const userRole = this.querySelector('.conversation-preview').textContent.includes('Google') ? 
+                'Software Engineer at Google' : 'Alumni';
+            
+            document.querySelector('.chat-header h3').textContent = userName;
+            document.querySelector('.chat-header p').textContent = userRole;
+            
+            // Clear current messages and load conversation
+            loadConversation(userName);
+        });
+    });
+
+    // Send message functionality
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const message = this.value.trim();
+            
+            if (message) {
+                sendMessage(message);
+                this.value = '';
+            }
+        }
+    });
+
+    function loadConversation(userName) {
+        // Simulate loading messages
+        chatMessages.innerHTML = `
+            <div class="message received">
+                <div class="message-content">
+                    Hey! Thanks for connecting with me.
+                </div>
+                <div class="message-time">2 hours ago</div>
+            </div>
+            <div class="message received">
+                <div class="message-content">
+                    I saw your profile and we have similar interests in technology.
+                </div>
+                <div class="message-time">1 hour ago</div>
+            </div>
+        `;
+    }
+
+    function sendMessage(message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message sent';
+        messageDiv.innerHTML = `
+            <div class="message-content">${message}</div>
+            <div class="message-time">Just now</div>
+        `;
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Simulate reply after delay
+        setTimeout(() => {
+            const replyDiv = document.createElement('div');
+            replyDiv.className = 'message received';
+            replyDiv.innerHTML = `
+                <div class="message-content">Thanks for your message! I'll get back to you soon.</div>
+                <div class="message-time">Just now</div>
+            `;
+            chatMessages.appendChild(replyDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 2000);
+    }
+}
+
+function setupSettingsSection() {
+    // Settings tabs
+    const settingsTabs = document.querySelectorAll('.settings-tab');
+    const settingsContents = document.querySelectorAll('.settings-content');
+
+    settingsTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            
+            settingsTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            settingsContents.forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tabId}-settings`).classList.add('active');
+        });
+    });
+
+    // Save buttons
+    document.querySelectorAll('.save-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (this.textContent.includes('Delete Account')) {
+                if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                    localStorage.clear();
+                    showToast('Account deleted successfully', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 2000);
+                }
+                return;
+            }
+            
+            showToast('Settings saved successfully', 'success');
+        });
+    });
+
+    // Form validation
+    document.querySelectorAll('.form-input').forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.style.borderColor = 'var(--accent-color)';
+            } else {
+                this.style.borderColor = 'var(--success-color)';
+            }
+        });
+    });
+}
+
+function setupQuickActions() {
+    // Quick action buttons
+    document.querySelectorAll('.btn-small').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const actionText = this.textContent.trim();
+            
+            switch(true) {
+                case actionText.includes('Update Profile'):
+                    document.querySelector('.nav-item[data-section="profile"]').click();
+                    break;
+                case actionText.includes('Share Profile'):
+                    showToast('Profile share link copied to clipboard', 'success');
+                    break;
+                case actionText.includes('Find Alumni'):
+                    document.querySelector('.nav-item[data-section="network"]').click();
+                    break;
+                case actionText.includes('Create Event'):
+                    document.querySelector('.nav-item[data-section="events"]').click();
+                    break;
+                default:
+                    showToast(`${actionText} action completed`, 'info');
+            }
+        });
+    });
+
+    // Global search
+    const searchInput = document.querySelector('.search-bar input');
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const query = this.value.trim();
+            if (query) {
+                showToast(`Searching for: ${query}`, 'info');
+                // In real app, this would filter content across sections
+            }
+        }
+    });
+}
+
+function initializeCalendar() {
+    const calendarDays = document.querySelectorAll('.calendar-day');
+    calendarDays.forEach(day => {
+        if (parseInt(day.textContent)) { // Only number days, not day labels
+            day.addEventListener('click', function() {
+                calendarDays.forEach(d => d.classList.remove('active'));
+                this.classList.add('active');
+                
+                if (this.classList.contains('has-event')) {
+                    showToast(`Showing events for November ${this.textContent}, 2023`, 'info');
+                }
+            });
+        }
+    });
+
+    // Calendar navigation
+    document.querySelectorAll('.calendar-header .btn-small').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const direction = this.querySelector('i').classList.contains('fa-chevron-left') ? 'previous' : 'next';
+            showToast(`Viewing ${direction} month`, 'info');
+        });
+    });
+}
+
+function initializeProfileEditor() {
+    // Make profile info editable on double-click
+    document.querySelectorAll('.info-item span:not(.info-label)').forEach(span => {
+        span.addEventListener('dblclick', function() {
+            const currentValue = this.textContent;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentValue;
+            input.className = 'form-input';
+            input.style.margin = '0';
+            input.style.padding = '0.2rem';
+            
+            this.parentNode.replaceChild(input, this);
+            input.focus();
+            
+            input.addEventListener('blur', function() {
+                const newSpan = document.createElement('span');
+                newSpan.textContent = this.value || currentValue;
+                this.parentNode.replaceChild(newSpan, this);
+                showToast('Profile updated', 'success');
+            });
+            
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    this.blur();
+                }
+            });
+        });
+    });
+}
+
+// Utility function to show toast messages
+function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <div class="toast-content">
+            <i class="fas fa-${getToastIcon(type)}"></i>
+            <span>${message}</span>
+        </div>
+        <div class="toast-progress"></div>
+    `;
+    
+    toast.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: ${getToastColor(type)};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        z-index: 10000;
+        animation: slideInRight 0.3s ease;
+        min-width: 300px;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+function getToastIcon(type) {
+    const icons = {
+        success: 'check-circle',
+        error: 'exclamation-circle',
+        warning: 'exclamation-triangle',
+        info: 'info-circle'
+    };
+    return icons[type] || 'info-circle';
+}
+
+function getToastColor(type) {
+    const colors = {
+        success: '#28a745',
+        error: '#f64f59',
+        warning: '#ffc107',
+        info: '#17a2b8'
+    };
+    return colors[type] || '#17a2b8';
+}
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+    
+    .toast-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: rgba(255,255,255,0.5);
+        width: 100%;
+        animation: progress 3s linear;
+    }
+    
+    @keyframes progress {
+        from { width: 100%; }
+        to { width: 0%; }
+    }
+    
+    /* Enhanced interactions */
+    .stat-card, .user-card, .event-card, .job-card, .mentorship-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .stat-card:hover, .user-card:hover, .event-card:hover, .job-card:hover, .mentorship-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    
+    .btn:active {
+        transform: translateY(1px);
+    }
+    
+    .form-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(26,79,142,0.1);
+    }
+    
+    /* Profile editing */
+    .info-item span:not(.info-label) {
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .info-item span:not(.info-label):hover {
+        background-color: rgba(26,79,142,0.1);
+        border-radius: 4px;
+        padding: 2px 4px;
+    }
+`;
+document.head.appendChild(style);
 </script>
 </body>
 </html>
