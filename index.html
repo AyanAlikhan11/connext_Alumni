@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlumniConnect - Centralized Alumni Management System</title>
+    <title>CONNEXT - Centralized Alumni Management System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* CSS Variables for consistent theming */
@@ -1057,147 +1057,281 @@
         </div>
     </div>
 
-    <script>
-        // Mobile Navigation Toggle
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
+    <!-- Replace the entire script section in index.html with this: -->
+<script>
+    // Mobile Navigation Toggle
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
 
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
 
-        // Close mobile menu when clicking on a link
-        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        }));
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+    }));
 
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // Login Modal Functionality
-        const loginBtn = document.getElementById('loginBtn');
-        const loginModal = document.getElementById('loginModal');
-        const closeModalBtn = document.getElementById('closeModal');
-        const roleSelection = document.getElementById('roleSelection');
-        const loginForms = document.getElementById('loginForms');
-        const roleCards = document.querySelectorAll('.role-card');
-        const alumniForm = document.getElementById('alumniForm');
-        const studentForm = document.getElementById('studentForm');
-        const instituteForm = document.getElementById('instituteForm');
-        const backToRolesLinks = document.querySelectorAll('.back-to-roles');
-
-        // Show modal when login button is clicked
-        loginBtn.addEventListener('click', (e) => {
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            loginModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
             
-            // Reset to role selection view
-            resetLoginView();
-        });
-
-        // Close modal when close button is clicked
-        closeModalBtn.addEventListener('click', () => {
-            loginModal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            resetLoginView();
-        });
-
-        // Close modal when clicking outside
-        loginModal.addEventListener('click', (e) => {
-            if (e.target === loginModal) {
-                loginModal.classList.remove('active');
-                document.body.style.overflow = 'auto';
-                resetLoginView();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
             }
         });
+    });
 
-        // Handle role selection
-        roleCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const role = this.getAttribute('data-role');
-                
-                // Remove selected class from all cards
-                roleCards.forEach(c => c.classList.remove('selected'));
-                
-                // Add selected class to clicked card
-                this.classList.add('selected');
-                
-                // Hide role selection and show login forms
-                roleSelection.style.display = 'none';
-                loginForms.style.display = 'block';
-                
-                // Show the appropriate form based on role
-                if (role === 'alumni') {
-                    alumniForm.classList.add('active');
-                    studentForm.classList.remove('active');
-                    instituteForm.classList.remove('active');
-                } else if (role === 'student') {
-                    alumniForm.classList.remove('active');
-                    studentForm.classList.add('active');
-                    instituteForm.classList.remove('active');
-                } else if (role === 'institute') {
-                    alumniForm.classList.remove('active');
-                    studentForm.classList.remove('active');
-                    instituteForm.classList.add('active');
-                }
-            });
-        });
+    // Login Modal Functionality - FIXED VERSION
+    const loginBtn = document.getElementById('loginBtn');
+    const loginModal = document.getElementById('loginModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const roleSelection = document.getElementById('roleSelection');
+    const loginForms = document.getElementById('loginForms');
+    const roleCards = document.querySelectorAll('.role-card');
+    const alumniForm = document.getElementById('alumniForm');
+    const studentForm = document.getElementById('studentForm');
+    const instituteForm = document.getElementById('instituteForm');
+    const backToRolesLinks = document.querySelectorAll('.back-to-roles');
 
-        // Handle back to roles links
-        backToRolesLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                resetLoginView();
-            });
-        });
-
-        // Reset login view to role selection
-        function resetLoginView() {
-            roleSelection.style.display = 'block';
-            loginForms.style.display = 'none';
-            roleCards.forEach(c => c.classList.remove('selected'));
-            alumniForm.classList.remove('active');
-            studentForm.classList.remove('active');
-            instituteForm.classList.remove('active');
+    // Mock user database - FIXED with correct passwords
+    const validUsers = {
+        'alumni@example.com': { 
+            password: 'alumni123', 
+            role: 'Alumni',
+            name: 'John Doe',
+            firstName: 'John'
+        },
+        'student@example.com': { 
+            password: 'student123', 
+            role: 'Student',
+            name: 'Sarah Smith',
+            firstName: 'Sarah'
+        },
+        'institute@example.com': { 
+            password: 'institute123', 
+            role: 'Institute Official',
+            name: 'Admin User',
+            firstName: 'Admin'
         }
+    };
 
-        // Handle form submissions
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                let role = '';
-                if (this.parentElement.id === 'alumniForm') role = 'Alumni';
-                else if (this.parentElement.id === 'studentForm') role = 'Student';
-                else if (this.parentElement.id === 'instituteForm') role = 'Institute Official';
-                
-                alert(`Login successful as ${role}! In a real application, you would be redirected to your dashboard.`);
-                
-                // Close modal and reset forms
-                loginModal.classList.remove('active');
-                document.body.style.overflow = 'auto';
-                this.reset();
-                resetLoginView();
-            });
+    // Show modal when login button is clicked
+    loginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        resetLoginModal();
+    });
+
+    // Close modal when close button is clicked
+    closeModalBtn.addEventListener('click', () => {
+        loginModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        resetLoginModal();
+    });
+
+    // Close modal when clicking outside
+    loginModal.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+            loginModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            resetLoginModal();
+        }
+    });
+
+    // Handle role selection
+    roleCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const role = this.getAttribute('data-role');
+            
+            // Remove selected class from all cards
+            roleCards.forEach(c => c.classList.remove('selected'));
+            
+            // Add selected class to clicked card
+            this.classList.add('selected');
+            
+            // Hide role selection and show login forms
+            roleSelection.style.display = 'none';
+            loginForms.style.display = 'block';
+            
+            // Show the appropriate form based on role
+            if (role === 'alumni') {
+                alumniForm.classList.add('active');
+                studentForm.classList.remove('active');
+                instituteForm.classList.remove('active');
+            } else if (role === 'student') {
+                alumniForm.classList.remove('active');
+                studentForm.classList.add('active');
+                instituteForm.classList.remove('active');
+            } else if (role === 'institute') {
+                alumniForm.classList.remove('active');
+                studentForm.classList.remove('active');
+                instituteForm.classList.add('active');
+            }
         });
-    </script>
+    });
+
+    // Handle back to roles links
+    backToRolesLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            resetLoginModal();
+        });
+    });
+
+    // FIXED: Handle form submissions with proper authentication
+    document.querySelectorAll('.login-form form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get the form data
+            const emailInput = this.querySelector('input[type="email"]');
+            const passwordInput = this.querySelector('input[type="password"]');
+            
+            if (!emailInput || !passwordInput) {
+                showLoginError('Form fields not found');
+                return;
+            }
+            
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            // Basic validation
+            if (!email || !password) {
+                showLoginError('Please enter both email and password');
+                return;
+            }
+
+            // Check against valid users
+            const user = validUsers[email];
+            if (user && user.password === password) {
+                // Store user data in localStorage
+                localStorage.setItem('token', 'mock-token-' + Date.now());
+                localStorage.setItem('userRole', user.role);
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', user.name);
+                localStorage.setItem('userFirstName', user.firstName);
+
+                // Show success message
+                showLoginSuccess(user.role);
+                
+                // Redirect to dashboard after delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+            } else {
+                showLoginError('Invalid email or password. Try: alumni@example.com / alumni123');
+            }
+        });
+    });
+
+    // Reset login modal to initial state
+    function resetLoginModal() {
+        // Remove any existing messages
+        const successDiv = document.querySelector('.login-success');
+        if (successDiv) successDiv.remove();
+        
+        const errors = document.querySelectorAll('.login-error');
+        errors.forEach(error => error.remove());
+        
+        // Show the role selection and hide the forms
+        roleSelection.style.display = 'block';
+        loginForms.style.display = 'none';
+        
+        // Reset the forms
+        document.querySelectorAll('form').forEach(form => form.reset());
+        
+        // Remove selected class from role cards
+        roleCards.forEach(card => card.classList.remove('selected'));
+        
+        // Hide all login forms
+        alumniForm.classList.remove('active');
+        studentForm.classList.remove('active');
+        instituteForm.classList.remove('active');
+    }
+
+    function showLoginSuccess(role) {
+        const modal = document.querySelector('.login-modal');
+        
+        // Remove existing success messages
+        const existingSuccess = modal.querySelector('.login-success');
+        if (existingSuccess) existingSuccess.remove();
+        
+        const successDiv = document.createElement('div');
+        successDiv.className = 'login-success';
+        successDiv.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: #28a745;">
+                <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <h3>Login Successful!</h3>
+                <p>Welcome back, ${role}! Redirecting to dashboard...</p>
+            </div>
+        `;
+        
+        // Replace forms with success message
+        const forms = document.getElementById('loginForms');
+        forms.style.display = 'none';
+        modal.insertBefore(successDiv, forms);
+    }
+
+    function showLoginError(message) {
+        // Remove existing error messages
+        const existingErrors = document.querySelectorAll('.login-error');
+        existingErrors.forEach(error => error.remove());
+        
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'login-error';
+        errorDiv.style.cssText = `
+            color: #f64f59;
+            text-align: center;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: rgba(246, 79, 89, 0.1);
+            border-radius: 8px;
+            border: 1px solid #f64f59;
+        `;
+        errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+        
+        const activeForm = document.querySelector('.login-form.active');
+        if (activeForm) {
+            // Insert error message at the top of the form
+            activeForm.insertBefore(errorDiv, activeForm.firstChild);
+        }
+    }
+
+    // Add CSS for better error/success messages
+    const style = document.createElement('style');
+    style.textContent = `
+        .login-success {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .login-error {
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
 </body>
 </html>
