@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CONNEXT - Centralized Alumni Management System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* CSS Variables for consistent theming */
         :root {
@@ -455,7 +456,7 @@
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             width: 90%;
-            max-width: 800px;
+            max-width: 900px;
             padding: 2rem;
             position: relative;
             transform: translateY(-50px);
@@ -486,7 +487,7 @@
         /* Role Selection Styles */
         .role-selection {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -530,11 +531,12 @@
         .role-card h3 {
             color: var(--primary-color);
             margin-bottom: 0.5rem;
+            font-size: 1rem;
         }
 
         .role-card p {
             color: var(--gray-color);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         /* Login Form Styles */
@@ -622,6 +624,56 @@
             cursor: pointer;
         }
 
+        /* Toast Styles */
+        #toast-container {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        .toast {
+            position: relative;
+            top: 100px;
+            right: 20px;
+            background: white;
+            color: var(--dark-color);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-xl);
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+            min-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
         /* Responsive Design */
         @media screen and (max-width: 992px) {
             .problem-content {
@@ -687,7 +739,7 @@
             }
 
             .role-selection {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -717,6 +769,10 @@
             
             .forgot-password {
                 margin-top: 0.5rem;
+            }
+
+            .role-selection {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -841,7 +897,7 @@
                     <h3><i class="fas fa-calendar-alt"></i> Event Management</h3>
                     <p>Tools to organize, promote, and manage alumni events, reunions, webinars, and networking sessions.</p>
                 </div>
-                <div class="outcome-card {
+                <div class="outcome-card">
                     <h3><i class="fas fa-handshake"></i> Mentorship Program</h3>
                     <p>Structured system to connect alumni mentors with current students and recent graduates.</p>
                 </div>
@@ -908,7 +964,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
-                    <h3>AlumniConnect</h3>
+                    <h3>CONNEXT</h3>
                     <p>The leading platform for educational institutions to manage alumni relationships and foster lifelong engagement.</p>
                 </div>
                 <div class="footer-column">
@@ -933,14 +989,14 @@
                 <div class="footer-column">
                     <h3>Contact Us</h3>
                     <ul class="footer-links">
-                        <li>Email: info@alumniconnect.com</li>
+                        <li>Email: info@connext.com</li>
                         <li>Phone: +1 (555) 123-4567</li>
                         <li>Address: 123 Education Ave, Academic City</li>
                     </ul>
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2023 AlumniConnect. All rights reserved.</p>
+                <p>&copy; 2023 CONNEXT. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -966,10 +1022,22 @@
                         <p>Currently enrolled students seeking mentorship and opportunities</p>
                     </div>
                     
+                    <div class="role-card" data-role="faculty">
+                        <div class="role-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <h3>Faculty</h3>
+                        <p>Teaching faculty and professors connecting with students and alumni</p>
+                    </div>
+                    
                     <div class="role-card" data-role="institute">
                         <div class="role-icon"><i class="fas fa-university"></i></div>
                         <h3>Institute Official</h3>
-                        <p>Faculty and administrators managing alumni relations</p>
+                        <p>Administrative staff managing alumni relations and programs</p>
+                    </div>
+                    
+                    <div class="role-card" data-role="employer">
+                        <div class="role-icon"><i class="fas fa-briefcase"></i></div>
+                        <h3>Employer/Recruiter</h3>
+                        <p>Recruiters and industry professionals seeking talent</p>
                     </div>
                 </div>
             </div>
@@ -1028,6 +1096,32 @@
                     </form>
                 </div>
                 
+                <!-- Faculty Login Form -->
+                <div class="login-form" id="facultyForm">
+                    <h2 class="modal-title"><i class="fas fa-chalkboard-teacher"></i> Faculty Login</h2>
+                    <form>
+                        <div class="form-group">
+                            <label for="faculty-email">Faculty Email</label>
+                            <input type="email" id="faculty-email" placeholder="Enter your faculty email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="faculty-password">Password</label>
+                            <input type="password" id="faculty-password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="faculty-remember">
+                                <label for="faculty-remember">Remember me</label>
+                            </div>
+                            <a href="#" class="forgot-password">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="submit-btn">Login as Faculty</button>
+                        <div class="signup-link">
+                            Not a faculty member? <a href="#" class="back-to-roles">Select different role</a>
+                        </div>
+                    </form>
+                </div>
+                
                 <!-- Institute Login Form -->
                 <div class="login-form" id="instituteForm">
                     <h2 class="modal-title"><i class="fas fa-university"></i> Institute Login</h2>
@@ -1053,12 +1147,47 @@
                         </div>
                     </form>
                 </div>
+                
+                <!-- Employee Login Form -->
+                <div class="login-form" id="employeeForm">
+                    <h2 class="modal-title"><i class="fas fa-briefcase"></i> Employee/Recruiter Login</h2>
+                    <form>
+                        <div class="form-group">
+                            <label for="employee-email">Professional Email</label>
+                            <input type="email" id="employee-email" placeholder="Enter your professional email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="employee-password">Password</label>
+                            <input type="password" id="employee-password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="employee-remember">
+                                <label for="employee-remember">Remember me</label>
+                            </div>
+                            <a href="#" class="forgot-password">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="submit-btn">Login as Employee/Recruiter</button>
+                        <div class="signup-link">
+                            Not an employee/recruiter? <a href="#" class="back-to-roles">Select different role</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Replace the entire script section in index.html with this: -->
-<script>
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script>
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://jaacexckqhynjpzrtubo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphYWNleGNrcWh5bmpwenJ0dWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMjYwMzksImV4cCI6MjA3NDcwMjAzOX0.v0oWDUeW_hk4tR93jXmeMUhS03a24lFl_4gS5I2dN_Q';
+
+    // Initialize Supabase client
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     // Mobile Navigation Toggle
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
@@ -1092,7 +1221,7 @@
         });
     });
 
-    // Login Modal Functionality - FIXED VERSION
+    // Login Modal Functionality
     const loginBtn = document.getElementById('loginBtn');
     const loginModal = document.getElementById('loginModal');
     const closeModalBtn = document.getElementById('closeModal');
@@ -1101,28 +1230,42 @@
     const roleCards = document.querySelectorAll('.role-card');
     const alumniForm = document.getElementById('alumniForm');
     const studentForm = document.getElementById('studentForm');
+    const facultyForm = document.getElementById('facultyForm');
     const instituteForm = document.getElementById('instituteForm');
+    const employeeForm = document.getElementById('employeeForm');
     const backToRolesLinks = document.querySelectorAll('.back-to-roles');
 
-    // Mock user database - FIXED with correct passwords
+    // Mock user database
     const validUsers = {
         'alumni@example.com': { 
             password: 'alumni123', 
-            role: 'Alumni',
+            role: 'alumni',
             name: 'John Doe',
             firstName: 'John'
         },
         'student@example.com': { 
             password: 'student123', 
-            role: 'Student',
+            role: 'student',
             name: 'Sarah Smith',
             firstName: 'Sarah'
         },
+        'faculty@example.com': { 
+            password: 'faculty123', 
+            role: 'faculty',
+            name: 'Dr. Robert Brown',
+            firstName: 'Robert'
+        },
         'institute@example.com': { 
             password: 'institute123', 
-            role: 'Institute Official',
+            role: 'institute',
             name: 'Admin User',
             firstName: 'Admin'
+        },
+        'employee@example.com': { 
+            password: 'employee123', 
+            role: 'employer',
+            name: 'Jennifer Wilson',
+            firstName: 'Jennifer'
         }
     };
 
@@ -1165,19 +1308,30 @@
             roleSelection.style.display = 'none';
             loginForms.style.display = 'block';
             
+            // Hide all forms first
+            alumniForm.classList.remove('active');
+            studentForm.classList.remove('active');
+            facultyForm.classList.remove('active');
+            instituteForm.classList.remove('active');
+            employeeForm.classList.remove('active');
+            
             // Show the appropriate form based on role
-            if (role === 'alumni') {
-                alumniForm.classList.add('active');
-                studentForm.classList.remove('active');
-                instituteForm.classList.remove('active');
-            } else if (role === 'student') {
-                alumniForm.classList.remove('active');
-                studentForm.classList.add('active');
-                instituteForm.classList.remove('active');
-            } else if (role === 'institute') {
-                alumniForm.classList.remove('active');
-                studentForm.classList.remove('active');
-                instituteForm.classList.add('active');
+            switch(role) {
+                case 'alumni':
+                    alumniForm.classList.add('active');
+                    break;
+                case 'student':
+                    studentForm.classList.add('active');
+                    break;
+                case 'faculty':
+                    facultyForm.classList.add('active');
+                    break;
+                case 'institute':
+                    instituteForm.classList.add('active');
+                    break;
+                case 'employer':
+                    employeeForm.classList.add('active');
+                    break;
             }
         });
     });
@@ -1190,9 +1344,9 @@
         });
     });
 
-    // FIXED: Handle form submissions with proper authentication
+    // Handle form submissions with proper authentication
     document.querySelectorAll('.login-form form').forEach(form => {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // Get the form data
@@ -1213,28 +1367,127 @@
                 return;
             }
 
-            // Check against valid users
-            const user = validUsers[email];
-            if (user && user.password === password) {
-                // Store user data in localStorage
-                localStorage.setItem('token', 'mock-token-' + Date.now());
-                localStorage.setItem('userRole', user.role);
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', user.name);
-                localStorage.setItem('userFirstName', user.firstName);
-
-                // Show success message
-                showLoginSuccess(user.role);
+            try {
+                showLoading(true);
                 
-                // Redirect to dashboard after delay
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 2000);
-            } else {
-                showLoginError('Invalid email or password. Try: alumni@example.com / alumni123');
+                // Try Supabase authentication first
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    console.log('Supabase login failed, using mock login:', error.message);
+                    // Fall back to mock authentication
+                    await handleMockLogin(email, password);
+                } else {
+                    console.log('Supabase login successful');
+                    await handleSupabaseLogin(data);
+                }
+            } catch (error) {
+                console.error('Login process error:', error);
+                showLoginError('Login failed. Please try again.');
+            } finally {
+                showLoading(false);
             }
         });
     });
+
+    async function handleMockLogin(email, password) {
+        // Check against valid users
+        const user = validUsers[email];
+        if (user && user.password === password) {
+            // Store user data in localStorage in the format dashboard.html expects
+            const userData = {
+                id: 'mock-user-' + Date.now(),
+                email: email,
+                name: user.name,
+                firstName: user.firstName,
+                role: user.role,
+                avatar: null,
+                graduationYear: null,
+                studentId: null,
+                facultyId: null,
+                institutionName: null,
+                companyName: null
+            };
+
+            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('token', 'mock-token-' + Date.now());
+
+            // Show success message
+            showLoginSuccess(user.role);
+            
+            // Redirect to dashboard after delay
+            setTimeout(() => {
+                console.log('Redirecting to dashboard...');
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        } else {
+            showLoginError('Invalid email or password. Try: alumni@example.com / alumni123');
+        }
+    }
+
+    async function handleSupabaseLogin(data) {
+        if (data.user) {
+            // Get user profile from database
+            const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', data.user.id)
+                .single();
+
+            if (profileError) {
+                console.error('Profile fetch error:', profileError);
+                // Continue with basic user data
+            }
+
+            // Store user data with all profile fields
+            const userData = {
+                id: data.user.id,
+                email: data.user.email,
+                name: profile?.full_name || data.user.email.split('@')[0],
+                firstName: profile?.first_name || data.user.email.split('@')[0],
+                role: profile?.role || 'alumni',
+                avatar: profile?.avatar_url,
+                graduationYear: profile?.graduation_year,
+                studentId: profile?.student_id,
+                facultyId: profile?.faculty_id,
+                institutionName: profile?.institution_name,
+                companyName: profile?.company_name
+            };
+
+            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('token', data.session.access_token);
+
+            console.log('User data stored, redirecting to dashboard...');
+            showLoginSuccess(userData.role);
+            
+            // Redirect to dashboard after delay
+            setTimeout(() => {
+                console.log('Redirecting to dashboard now...');
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        } else {
+            throw new Error('No user data returned from authentication');
+        }
+    }
+
+    function showLoading(show) {
+        const submitBtns = document.querySelectorAll('.submit-btn');
+        submitBtns.forEach(btn => {
+            if (show) {
+                if (!btn.dataset.originalText) {
+                    btn.dataset.originalText = btn.textContent;
+                }
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+                btn.disabled = true;
+            } else {
+                btn.innerHTML = btn.dataset.originalText || 'Sign In';
+                btn.disabled = false;
+            }
+        });
+    }
 
     // Reset login modal to initial state
     function resetLoginModal() {
@@ -1258,7 +1511,9 @@
         // Hide all login forms
         alumniForm.classList.remove('active');
         studentForm.classList.remove('active');
+        facultyForm.classList.remove('active');
         instituteForm.classList.remove('active');
+        employeeForm.classList.remove('active');
     }
 
     function showLoginSuccess(role) {
